@@ -6,4 +6,5 @@
  *
  */
 module ProyectoProde {
+	requires java.sql;
 }

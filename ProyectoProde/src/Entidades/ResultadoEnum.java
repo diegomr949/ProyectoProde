@@ -1,4 +1,4 @@
-package Prode;
+package Entidades;
 
 public enum ResultadoEnum {
 	ganador,

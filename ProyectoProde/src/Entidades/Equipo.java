@@ -1,4 +1,4 @@
-package Prode;
+package Entidades;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ public class Equipo {
 	public void setPartidos(List<Partido> partidos) {
 		this.partidos = partidos;
 	}
-	private String getNombre() {
+	public String getNombre() {
 		return nombre;
 	}
 	public void setNombre(String nombre) {
