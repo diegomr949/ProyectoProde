@@ -4,9 +4,11 @@ import java.io.BufferedReader;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -23,10 +25,17 @@ import Entidades.Ronda;
 
 public class LeerArchivos {
 
+	private static final String SQLException = null;
+	private static final String UnsupportedEncodingException = null;
+	private static final String FileNotFoundException = null;
+	private static final String[] String = null;
+
+
 	public static void main(String[] args) throws IOException, SQLException {
 		leerArchivos();
 		
-		leerPronosticosDB();
+		leerPronosticosDB_mariana();
+		leerPronosticosDB_pedro();
 	}
 	
 	public static void leerArchivos() throws IOException {
@@ -34,7 +43,7 @@ public class LeerArchivos {
 		BufferedReader br = null;
 
 		String path = "C:\\Users\\Diego Moreno Rico\\Desktop\\Diego\\Facultad\\2023\\Argentina programa UTN\\Integrador\\ProyectoProde\\ProyectoProde\\resultados.txt";
-		br = new BufferedReader(new InputStreamReader(new FileInputStream(path), "utf-8"));
+		BufferedReader bufferedReader = br = new BufferedReader(new InputStreamReader(new FileInputStream(path), "utf-8"));
 
 		Ronda ronda = new Ronda();
 		// Lectura
@@ -48,6 +57,8 @@ public class LeerArchivos {
 			String cantGolesEquipo1 = campos[2];
 			String cantGolesEquipo2 = campos[3];
 			String nombreEquipo2 = campos[4];
+			
+			
 			
 
 			ronda.setNro(nroRonda);
@@ -72,77 +83,82 @@ public class LeerArchivos {
 		}
 		
 		
-		//pronostico
-		path = "C:\\Users\\Diego Moreno Rico\\Desktop\\Diego\\Facultad\\2023\\Argentina programa UTN\\Integrador\\ProyectoProde\\ProyectoProde\\pronosticos.txt";
-		br = new BufferedReader(new InputStreamReader(new FileInputStream(path), "utf-8"));
-
-		// Lectura
-		List<Pronostico> pronosticos = new ArrayList<Pronostico>();
-		while ((linea = br.readLine()) != null){
-			String [] campos = linea.split("-");
-			String nombreParticipante = campos[0];
-			String nombreEquipo1 = campos[1];
-			String gano1 = campos[2];
-			String empato = campos[3];
-			String gano2 = campos[4];
-			String nombreEquipo2 = campos[5];
-			
-			Pronostico pronostico = new Pronostico();
-			pronostico.setNombrePersona(nombreParticipante);
-			Partido partido = ronda.getPartidoXEquipos(nombreEquipo1, nombreEquipo2);
-			pronostico.setPartido(partido);
-			if(gano1.equals("X")){
-				pronostico.setEquipo(partido.getEquipo1());
-				pronostico.setResultado(ResultadoEnum.ganador);
-			}else if(gano2.equals("X")){
-				pronostico.setEquipo(partido.getEquipo2());
-				pronostico.setResultado(ResultadoEnum.ganador);
-			}else{
-				pronostico.setEquipo(null);
-				pronostico.setResultado(ResultadoEnum.empate);
-			}
-			pronosticos.add(pronostico);
-		}
-		
-		System.out.println("----- PRONOSTICOS -----");
-		for(Pronostico prono : pronosticos){
-			System.out.println(prono.getNombrePersona());
-			System.out.println(prono.getResultado().toString());
-			System.out.println(prono.getEquipo() != null ? prono.getEquipo().getNombre() : "");
-		}
-
 	}
+	//Pronosticos de Mariana
 	
-	public static void leerPronosticosDB() throws SQLException{
+	public static void leerPronosticosDB_mariana() throws SQLException, UnsupportedEncodingException, FileNotFoundException, IOException{
 		Connection conexion = null;
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			// URL MySQL
 			// "jdbc:mysql://" + host + ":" + puerto + "/"+baseDeDatos;
-			String urlConexion = "jdbc:mysql://localhost:3306/argentina_programa_db";
+			String urlConexion = "jdbc:mysql://localhost:3306/integrador";
 			conexion = DriverManager.getConnection(urlConexion, "root", "123456");
 
 			Statement s = conexion.createStatement();
-			ResultSet rs = s.executeQuery("select * from pronosticos");
+			ResultSet rs = s.executeQuery("select * from pronosticos_mariana");
+			System.out.println("Los pronosticos de Mariana son:");
 			while (rs.next()) { 
-				//fila
-			    System.out.println(rs.getString("participante"));
-			    System.out.println(rs.getString("equipo1"));
-			    System.out.println(rs.getString("gana1"));
-			    System.out.println(rs.getString("empata"));
-			    System.out.println(rs.getString("gana2"));
-			    System.out.println(rs.getString("equipo2"));
-			    System.out.println("----------------");
+			
+		
+			    System.out.println("Partido numero " + rs.getString("partido"));
+			    System.out.println("Resultado es " + rs.getString("resultado"));
+			  
+					
 			}
+				
 			
-			
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			if (conexion != null && !conexion.isClosed())
 				conexion.close();
 		}
+		}
+		
+	
+	
+	
+	
+	//Pronosticos de Pedro
+		
+		public static void leerPronosticosDB_pedro() throws SQLException, UnsupportedEncodingException, FileNotFoundException, IOException{
+			Connection conexion = null;
+			try {
+				Class.forName("com.mysql.jdbc.Driver");
+				// URL MySQL
+				// "jdbc:mysql://" + host + ":" + puerto + "/"+baseDeDatos;
+				String urlConexion = "jdbc:mysql://localhost:3306/integrador";
+				conexion = DriverManager.getConnection(urlConexion, "root", "123456");
+
+				Statement s = conexion.createStatement();
+				ResultSet rs = s.executeQuery("select * from pronosticos_pedro");
+				System.out.println("Los pronosticos de Pedro son:");
+				while (rs.next()) { 
+					//fila
+					
+				    System.out.println("Partido numero " + rs.getString("partido"));
+				    System.out.println("Resultado es " + rs.getString("resultado"));
+				}
+				
+					
+			
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				if (conexion != null && !conexion.isClosed())
+					conexion.close();
+			}
+			
+			
+			
+			int puntosmariana;
+			int puntospedro;
+			
+			
+		
 	}
+	
 	
 }
